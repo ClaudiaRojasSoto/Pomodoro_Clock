@@ -12,6 +12,9 @@ const App = () => (
       <BreakControl />
       <SessionControl />
       <Timer />
+      {/* Aquí está el elemento de audio */}
+      <audio id="beep" src="/alarm-clock.mp3" preload="auto" aria-label="Timer beep" />
+
     </div>
   </Provider>
 );
