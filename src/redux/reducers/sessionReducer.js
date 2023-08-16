@@ -1,4 +1,4 @@
-import { INCREMENT_SESSION, DECREMENT_SESSION } from "../actions/actionTypes";
+import { INCREMENT_SESSION, DECREMENT_SESSION } from '../actions/actionTypes';
 
 const initialState = 25;
 

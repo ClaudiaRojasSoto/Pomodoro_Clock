@@ -1,4 +1,6 @@
-import { SET_TIMER, START_TIMER, PAUSE_TIMER, RESET_TIMER } from "../actions/actionTypes";
+import {
+  SET_TIMER, START_TIMER, PAUSE_TIMER, RESET_TIMER,
+} from '../actions/actionTypes';
 
 const initialState = {
   timeInSeconds: 1500, // 25 minutes

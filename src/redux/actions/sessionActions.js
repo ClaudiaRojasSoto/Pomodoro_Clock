@@ -1,9 +1,5 @@
-import { INCREMENT_SESSION, DECREMENT_SESSION } from "./actionTypes";
+import { INCREMENT_SESSION, DECREMENT_SESSION } from './actionTypes';
 
-export const incrementSession = () => {
-  return { type: INCREMENT_SESSION };
-};
+export const incrementSession = () => ({ type: INCREMENT_SESSION });
 
-export const decrementSession = () => {
-  return { type: DECREMENT_SESSION };
-};
+export const decrementSession = () => ({ type: DECREMENT_SESSION });

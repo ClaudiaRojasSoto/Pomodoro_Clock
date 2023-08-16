@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setTimer } from "../redux/actions/timerActions";
-import TimerControls from "./TimerControls";
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTimer } from '../redux/actions/timerActions';
+import TimerControls from './TimerControls';
 
 const Timer = () => {
   const timer = useSelector((state) => state.timer);
@@ -15,7 +15,15 @@ const Timer = () => {
       }, 1000);
       return () => clearInterval(interval);
     }
+    // Return an empty function as cleanup
+    return () => {};
   }, [isRunning, timeInSeconds, dispatch]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainderSeconds = seconds % 60;
+    return `${minutes}:${remainderSeconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div>
@@ -24,12 +32,6 @@ const Timer = () => {
       <TimerControls isRunning={isRunning} />
     </div>
   );
-};
-
-const formatTime = (seconds) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainderSeconds = seconds % 60;
-  return `${minutes}:${remainderSeconds.toString().padStart(2, "0")}`;
 };
 
 export default Timer;

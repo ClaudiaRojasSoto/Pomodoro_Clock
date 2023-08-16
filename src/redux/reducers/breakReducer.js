@@ -1,4 +1,4 @@
-import { INCREMENT_BREAK, DECREMENT_BREAK } from "../actions/actionTypes";
+import { INCREMENT_BREAK, DECREMENT_BREAK } from '../actions/actionTypes';
 
 const initialState = 5;
 
