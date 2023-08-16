@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { incrementBreak, decrementBreak } from '../redux/actions/breakActions';
+import './Timer.css';
 
 const BreakControl = () => {
   const breakLength = useSelector((state) => state.breakLength);
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="break-length">
       <h2 id="break-label">Break Length</h2>
       <div>
         <button id="break-decrement" type="button" onClick={() => dispatch(decrementBreak())}>-</button>

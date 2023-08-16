@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setTimer, setSessionLength } from '../redux/actions/timerActions';
+import './Timer.css';
 
 const SessionControl = () => {
   const sessionLength = useSelector((state) => state.sessionLength);
@@ -23,7 +24,7 @@ const SessionControl = () => {
   };
 
   return (
-    <div>
+    <div className="session-length">
       <h2 id="session-label">Session Length</h2>
       <div>
         <button id="session-decrement" type="button" onClick={handleDecrement}>-</button>

@@ -1,5 +1,5 @@
 import {
-  SET_TIMER, START_TIMER, PAUSE_TIMER, RESET_TIMER, RESET_ALL, SWITCH_SESSION_BREAK,
+  SET_TIMER, START_TIMER, PAUSE_TIMER, SWITCH_SESSION_BREAK, RESET_ALL,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -16,13 +16,11 @@ const timerReducer = (state = initialState, action) => {
       return { ...state, isRunning: true };
     case PAUSE_TIMER:
       return { ...state, isRunning: false };
-    case RESET_TIMER:
-      return { ...initialState };
     case SWITCH_SESSION_BREAK:
       return {
         ...state,
         isSession: !state.isSession,
-        timeInSeconds: !state.isSession ? action.sessionLength * 60 : action.breakLength * 60,
+        timeInSeconds: (state.isSession ? action.breakLength : action.sessionLength) * 60,
       };
     case RESET_ALL:
       return initialState;

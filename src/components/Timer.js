@@ -1,47 +1,48 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setTimer, startTimer, switchSessionBreak } from '../redux/actions/timerActions';
 import TimerControls from './TimerControls';
+import './Timer.css';
 
 const Timer = () => {
-  const timer = useSelector((state) => state.timer);
+  const sessionLength = useSelector((state) => state.sessionLength);
   const breakLength = useSelector((state) => state.breakLength);
-  const { timeInSeconds, isRunning, isSession } = timer;
+  const { timeInSeconds, isRunning, isSession } = useSelector((state) => state.timer);
   const dispatch = useDispatch();
-  const intervalRef = useRef(null);
-
-  const decrementTime = useCallback(() => {
-    dispatch(setTimer(timeInSeconds - 1));
-    if (timeInSeconds - 1 === 0) {
-      document.getElementById('beep').play();
-      dispatch(switchSessionBreak(25, breakLength));
-      dispatch(startTimer());
-    }
-  }, [timeInSeconds, isSession, breakLength, dispatch]);
+  const [timerInterval, setTimerInterval] = useState(null);
 
   useEffect(() => {
     if (isRunning && timeInSeconds > 0) {
-      intervalRef.current = setInterval(decrementTime, 1000);
+      setTimerInterval(setInterval(() => {
+        dispatch(setTimer(timeInSeconds - 1));
+      }, 1000));
+    } else if (timeInSeconds === 0) {
+      document.getElementById('beep').play();
+      clearInterval(timerInterval);
+      if (isSession) {
+        dispatch(switchSessionBreak(sessionLength, breakLength)); // Cambio a descanso
+      } else {
+        dispatch(switchSessionBreak(breakLength, sessionLength)); // Cambio a sesión
+      }
+      dispatch(startTimer());
     } else {
-      clearInterval(intervalRef.current);
+      clearInterval(timerInterval);
     }
     return () => {
-      clearInterval(intervalRef.current);
+      clearInterval(timerInterval);
     };
-  }, [isRunning, timeInSeconds, decrementTime]);
+  }, [isRunning, timeInSeconds, isSession, breakLength, sessionLength, dispatch]);
 
   const formatTime = () => {
-    const totalSeconds = timeInSeconds;
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainderSeconds = totalSeconds % 60;
+    const minutes = Math.floor(timeInSeconds / 60);
+    const remainderSeconds = timeInSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainderSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div>
-      <h2 id="timer-label">{isSession ? 'Session' : 'Break'}</h2>
-      {/* Cambia según la sesión o el descanso */}
-      <div id="time-left">{formatTime()}</div>
+    <div className="timer-container">
+      <h2 id="timer-label" className="timer-label">{isSession ? 'Session' : 'Break'}</h2>
+      <div id="time-left" className="time-display">{formatTime()}</div>
       <TimerControls isRunning={isRunning} />
     </div>
   );
