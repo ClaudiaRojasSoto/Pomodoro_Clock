@@ -1,4 +1,4 @@
-import { INCREMENT_BREAK, DECREMENT_BREAK } from '../actions/actionTypes';
+import { INCREMENT_BREAK, DECREMENT_BREAK, RESET_ALL } from '../actions/actionTypes';
 
 const initialState = 5;
 
@@ -8,6 +8,8 @@ const breakReducer = (state = initialState, action) => {
       return Math.min(60, state + 1);
     case DECREMENT_BREAK:
       return Math.max(1, state - 1);
+    case RESET_ALL:
+      return initialState;
     default:
       return state;
   }

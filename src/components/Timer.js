@@ -1,34 +1,48 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setTimer } from '../redux/actions/timerActions';
+import { setTimer, startTimer, switchSessionBreak } from '../redux/actions/timerActions';
 import TimerControls from './TimerControls';
+import './Timer.css';
 
 const Timer = () => {
-  const timer = useSelector((state) => state.timer);
-  const { timeInSeconds, isRunning } = timer;
+  const sessionLength = useSelector((state) => state.sessionLength);
+  const breakLength = useSelector((state) => state.breakLength);
+  const { timeInSeconds, isRunning, isSession } = useSelector((state) => state.timer);
   const dispatch = useDispatch();
+  const [timerInterval, setTimerInterval] = useState(null);
 
   useEffect(() => {
     if (isRunning && timeInSeconds > 0) {
-      const interval = setInterval(() => {
+      setTimerInterval(setInterval(() => {
         dispatch(setTimer(timeInSeconds - 1));
-      }, 1000);
-      return () => clearInterval(interval);
+      }, 1000));
+    } else if (timeInSeconds === 0) {
+      document.getElementById('beep').play();
+      clearInterval(timerInterval);
+      if (isSession) {
+        dispatch(switchSessionBreak(sessionLength, breakLength)); // Cambio a descanso
+      } else {
+        dispatch(switchSessionBreak(breakLength, sessionLength)); // Cambio a sesión
+      }
+      dispatch(startTimer());
+    } else {
+      clearInterval(timerInterval);
     }
-    // Return an empty function as cleanup
-    return () => {};
-  }, [isRunning, timeInSeconds, dispatch]);
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [isRunning, timeInSeconds, isSession, breakLength, sessionLength, dispatch]);
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainderSeconds = seconds % 60;
-    return `${minutes}:${remainderSeconds.toString().padStart(2, '0')}`;
+  const formatTime = () => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const remainderSeconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainderSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div>
-      <h2>Timer</h2>
-      <div id="time-left">{formatTime(timeInSeconds)}</div>
+    <div className="timer-container">
+      <h2 id="timer-label" className="timer-label">{isSession ? 'Session' : 'Break'}</h2>
+      <div id="time-left" className="time-display">{formatTime()}</div>
       <TimerControls isRunning={isRunning} />
     </div>
   );
